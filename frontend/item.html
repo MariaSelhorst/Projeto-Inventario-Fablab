@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item - FabLab</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main-content" style="margin-left:0; max-width:760px; margin:0 auto;">
+        <h1>🔳 Item do FabLab</h1>
+
+        <div class="card" style="text-align:left;">
+            <h2 id="nomeItem">Carregando...</h2>
+            <p style="font-size:18px; color:#cbd5e1; margin-top:12px;"><strong>Categoria:</strong> <span id="categoriaItem">-</span></p>
+            <p style="font-size:18px; color:#cbd5e1; margin-top:12px;"><strong>Quantidade:</strong> <span id="quantidadeItem">-</span></p>
+            <p style="font-size:18px; color:#cbd5e1; margin-top:12px;"><strong>Localização:</strong> <span id="localizacaoItem">-</span></p>
+        </div>
+
+        <button style="margin-top:20px;" onclick="window.location.href='index.html'">Voltar ao sistema</button>
+    </div>
+
+    <script>
+        const API = window.location.origin;
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+
+        async function carregarItem() {
+            if (!id) {
+                document.getElementById('nomeItem').innerText = 'Item não informado';
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API}/itens/${id}`);
+                const item = await res.json();
+
+                if (!res.ok) {
+                    document.getElementById('nomeItem').innerText = item.erro || 'Item não encontrado';
+                    return;
+                }
+
+                document.getElementById('nomeItem').innerText = item.nome;
+                document.getElementById('categoriaItem').innerText = item.categoria || '-';
+                document.getElementById('quantidadeItem').innerText = item.quantidade ?? '-';
+                document.getElementById('localizacaoItem').innerText = item.localizacao || '-';
+            } catch (error) {
+                document.getElementById('nomeItem').innerText = 'Erro ao carregar item';
+            }
+        }
+
+        carregarItem();
+    </script>
+</body>
+</html>
